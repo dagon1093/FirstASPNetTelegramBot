@@ -1,3 +1,4 @@
+using FirstAspNetTelegramBot.Models;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -75,7 +76,21 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
                 /poll           - send a poll
                 /poll_anonymous - send an anonymous poll
                 /throw          - what happens if handler fails
+
+                your message saved
             """;
+
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            // создаем два объекта User
+            Note note = new Note(msg.Id, "", msg.Text, $"{msg.Chat.FirstName} {msg.Chat.LastName}");
+
+
+            // добавляем их в бд
+            db.Notes.Add(note);
+            db.SaveChanges();
+        }
+
         return await bot.SendMessage(msg.Chat, usage, parseMode: ParseMode.Html, replyMarkup: new ReplyKeyboardRemove());
     }
 
