@@ -47,6 +47,8 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         if (msg.Text is not { } messageText)
             return;
 
+        
+
         Message sentMessage = await (messageText.Split(' ')[0] switch
         {
             "/photo" => SendPhoto(msg),
@@ -80,6 +82,10 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
                 your message saved
             """;
 
+        var inlineMarkup = new InlineKeyboardMarkup()
+            .AddNewRow()
+                .AddButton("Посмотреть твои записи");
+
         using (ApplicationContext db = new ApplicationContext())
         {
             // создаем два объекта User
@@ -91,7 +97,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
             db.SaveChanges();
         }
 
-        return await bot.SendMessage(msg.Chat, usage, parseMode: ParseMode.Html, replyMarkup: new ReplyKeyboardRemove());
+        return await bot.SendMessage(msg.Chat, usage, parseMode: ParseMode.Html, replyMarkup: inlineMarkup);
     }
 
     async Task<Message> SendPhoto(Message msg)
