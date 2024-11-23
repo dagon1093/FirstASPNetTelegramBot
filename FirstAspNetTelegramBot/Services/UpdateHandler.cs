@@ -1,3 +1,4 @@
+using System.Text;
 using FirstAspNetTelegramBot.Models;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -89,7 +90,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         using (ApplicationContext db = new ApplicationContext())
         {
             // создаем два объекта User
-            Note note = new Note(msg.Id, "", msg.Text, $"{msg.Chat.FirstName} {msg.Chat.LastName}");
+            Note note = new Note(msg.Id, "", msg.Text, $"{msg.Chat.FirstName} {msg.Chat.LastName}", msg.Chat.Id);
 
 
             // добавляем их в бд
@@ -166,6 +167,13 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
     private async Task OnCallbackQuery(CallbackQuery callbackQuery)
     {
         logger.LogInformation("Received inline keyboard callback from: {CallbackQueryId}", callbackQuery.Id);
+        if (callbackQuery.Data.Contains("Посмотреть твои записи"))
+        {
+            
+            await bot.AnswerCallbackQuery(callbackQuery.Id, $"{getNotesByFirstNameAndLastName(callbackQuery.Message.Chat.Id)}");
+            await bot.SendMessage(callbackQuery.Message!.Chat, $"{getNotesByFirstNameAndLastName(callbackQuery.Message.Chat.Id)}");
+        }
+
         await bot.AnswerCallbackQuery(callbackQuery.Id, $"Received {callbackQuery.Data}");
         await bot.SendMessage(callbackQuery.Message!.Chat, $"Received {callbackQuery.Data}");
     }
@@ -209,5 +217,19 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
     {
         logger.LogInformation("Unknown update type: {UpdateType}", update.Type);
         return Task.CompletedTask;
+    }
+
+    private string getNotesByFirstNameAndLastName(long id)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var notes = db.Notes.Where(p => p.ChatId == id);
+            foreach (Note note in notes) { 
+                stringBuilder.Append(note.Description + "\n");
+                Console.WriteLine($"{note.Description}");
+            }
+        }
+        return stringBuilder.ToString();
     }
 }
