@@ -1,21 +1,24 @@
-﻿namespace FirstAspNetTelegramBot.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FirstAspNetTelegramBot.Models
 {
     public class Note
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
-        public string? Author { get; set; }
 
-        public long ChatId { get; set; }
+        public long UserId { get; set; }
+        public User User { get; set; }
+
         public Note() { }
-        public Note(int id, string title, string description, string author, long chatId)
+        public Note(int id, string title, string description, long userId)
         {
             Id = id;
             Title = title;
             Description = description;
-            Author = author;
-            ChatId = chatId;
+            UserId = userId;
         }
 
     }

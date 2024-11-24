@@ -89,9 +89,10 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
 
         using (ApplicationContext db = new ApplicationContext())
         {
+            if (db.Users.FirstOrDefault(u => u.Id == msg.Chat.Id) == null)
+                db.Users.Add(new FirstAspNetTelegramBot.Models.User { Id = msg.Chat.Id, FirstName = msg.Chat.FirstName, LastName = msg.Chat.LastName });
             // создаем два объекта User
-            Note note = new Note(msg.Id, "", msg.Text, $"{msg.Chat.FirstName} {msg.Chat.LastName}", msg.Chat.Id);
-
+            Note note = new Note(msg.Id, "", msg.Text, /*$"{msg.Chat.FirstName} {msg.Chat.LastName}",*/ msg.Chat.Id );
 
             // добавляем их в бд
             db.Notes.Add(note);
@@ -224,7 +225,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         StringBuilder stringBuilder = new StringBuilder();
         using (ApplicationContext db = new ApplicationContext())
         {
-            var notes = db.Notes.Where(p => p.ChatId == id);
+            var notes = db.Notes.Where(p => p.User.Id == id);
             foreach (Note note in notes) { 
                 stringBuilder.Append(note.Description + "\n");
                 Console.WriteLine($"{note.Description}");
