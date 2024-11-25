@@ -114,10 +114,12 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
     async Task<Message> SendInlineKeyboard(Message msg)
     {
         var inlineMarkup = new InlineKeyboardMarkup()
-            .AddNewRow("1.1", "1.2", "1.3")
-            .AddNewRow()
-                .AddButton("WithCallbackData", "CallbackData")
-                .AddButton(InlineKeyboardButton.WithUrl("WithUrl", "https://github.com/TelegramBots/Telegram.Bot"));
+            .AddButton("Показать последние 5 заметок", "Not implemented");
+        //var inlineMarkup = new InlineKeyboardMarkup()
+        //    .AddNewRow("1.1", "1.2", "1.3")
+        //    .AddNewRow()
+        //        .AddButton("WithCallbackData", "CallbackData")
+        //        .AddButton(InlineKeyboardButton.WithUrl("WithUrl", "https://github.com/TelegramBots/Telegram.Bot"));
         return await bot.SendMessage(msg.Chat, "Inline buttons:", replyMarkup: inlineMarkup);
     }
 
