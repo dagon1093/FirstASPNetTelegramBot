@@ -114,7 +114,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
     async Task<Message> SendInlineKeyboard(Message msg)
     {
         var inlineMarkup = new InlineKeyboardMarkup()
-            .AddButton("Показать последние 5 заметок", "Not implemented");
+            .AddButton("Показать последние 5 заметок", lastFiveUserNotes(msg.Chat.Id));
         //var inlineMarkup = new InlineKeyboardMarkup()
         //    .AddNewRow("1.1", "1.2", "1.3")
         //    .AddNewRow()
@@ -235,4 +235,6 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         }
         return stringBuilder.ToString();
     }
+
+    private string lastFiveUserNotes(long id) {return "Not implemented"; }
 }
