@@ -12,13 +12,16 @@ namespace FirstAspNetTelegramBot.Models
         public long UserId { get; set; }
         public User User { get; set; }
 
+        public DateTime CreatedAt { get; set; }
+
         public Note() { }
-        public Note(int id, string title, string description, long userId)
+        public Note(int id, string title, string description, long userId, DateTime createdAt)
         {
             Id = id;
             Title = title;
             Description = description;
             UserId = userId;
+            CreatedAt = createdAt;
         }
 
     }
