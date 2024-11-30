@@ -48,10 +48,9 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         if (msg.Text is not { } messageText)
             return;
 
-        
-
         Message sentMessage = await (messageText.Split(' ')[0] switch
         {
+            "Показать последние 5 заметок" => SendLastFiveNotes(msg),
             "/photo" => SendPhoto(msg),
             "/inline_buttons" => SendInlineKeyboard(msg),
             "/keyboard" => SendReplyKeyboard(msg),
@@ -63,6 +62,8 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
             "/throw" => FailingHandler(msg),
             _ => Usage(msg)
         });
+
+        
         logger.LogInformation("The message was sent with id: {SentMessageId}", sentMessage.Id);
     }
 
@@ -175,9 +176,14 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
             await bot.AnswerCallbackQuery(callbackQuery.Id, $"{getNotesByFirstNameAndLastName(callbackQuery.Message.Chat.Id)}");
             await bot.SendMessage(callbackQuery.Message!.Chat, $"{getNotesByFirstNameAndLastName(callbackQuery.Message.Chat.Id)}");
         }
+        if (callbackQuery.Data.Contains("Показать последние 5 заметок"))
+        {
+            await bot.AnswerCallbackQuery(callbackQuery.Id, $"{lastFiveUserNotes(callbackQuery.Message.Chat.Id)}");
+            await bot.SendMessage(callbackQuery.Message!.Chat, $"{lastFiveUserNotes(callbackQuery.Message.Chat.Id)}");
+        }
 
-        await bot.AnswerCallbackQuery(callbackQuery.Id, $"Received {callbackQuery.Data}");
-        await bot.SendMessage(callbackQuery.Message!.Chat, $"Received {callbackQuery.Data}");
+            //await bot.AnswerCallbackQuery(callbackQuery.Id, $"Received {callbackQuery.Data}");
+        await bot.SendMessage(callbackQuery.Message!.Chat, $"{callbackQuery.Data}");
     }
 
     #region Inline Mode
@@ -247,6 +253,12 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
                 Console.WriteLine($"{note.Description}");
             }
         }
+
         return stringBuilder.ToString(); 
+    }
+
+    private async Task<Message> SendLastFiveNotes(Message msg)
+    {
+        return await bot.SendMessage(msg.Chat, lastFiveUserNotes(msg.Chat.Id), parseMode: ParseMode.Html);
     }
 }
