@@ -9,7 +9,6 @@ namespace FirstAspNetTelegramBot.Models
 
         public ApplicationContext()
         {
-            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

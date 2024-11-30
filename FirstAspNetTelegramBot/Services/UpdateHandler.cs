@@ -172,7 +172,6 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         logger.LogInformation("Received inline keyboard callback from: {CallbackQueryId}", callbackQuery.Id);
         if (callbackQuery.Data.Contains("Посмотреть твои записи"))
         {
-            
             await bot.AnswerCallbackQuery(callbackQuery.Id, $"{getNotesByFirstNameAndLastName(callbackQuery.Message.Chat.Id)}");
             await bot.SendMessage(callbackQuery.Message!.Chat, $"{getNotesByFirstNameAndLastName(callbackQuery.Message.Chat.Id)}");
         }
