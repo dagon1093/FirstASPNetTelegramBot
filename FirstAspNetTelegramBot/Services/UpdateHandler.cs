@@ -92,7 +92,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
             if (db.Users.FirstOrDefault(u => u.Id == msg.Chat.Id) == null)
                 db.Users.Add(new FirstAspNetTelegramBot.Models.User { Id = msg.Chat.Id, FirstName = msg.Chat.FirstName, LastName = msg.Chat.LastName });
             // создаем два объекта User
-            Note note = new Note(msg.Id, "", msg.Text, /*$"{msg.Chat.FirstName} {msg.Chat.LastName}",*/ msg.Chat.Id , DateTime.Now);
+            Note note = new Note(msg.Id, "", msg.Text, /*$"{msg.Chat.FirstName} {msg.Chat.LastName}",*/ msg.Chat.Id , DateTime.Now.ToUniversalTime());
 
             // добавляем их в бд
             db.Notes.Add(note);
