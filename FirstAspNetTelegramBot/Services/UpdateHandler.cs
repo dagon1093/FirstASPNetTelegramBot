@@ -236,5 +236,18 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         return stringBuilder.ToString();
     }
 
-    private string lastFiveUserNotes(long id) {return "Not implemented"; }
+    private string lastFiveUserNotes(long id) {
+
+        StringBuilder stringBuilder = new StringBuilder();
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var notes = db.Notes.OrderByDescending(p => p.Id).Take(5);
+            foreach (Note note in notes)
+            {
+                stringBuilder.Append(note.Description + "\n");
+                Console.WriteLine($"{note.Description}");
+            }
+        }
+        return stringBuilder.ToString(); 
+    }
 }
