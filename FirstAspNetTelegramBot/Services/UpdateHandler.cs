@@ -51,6 +51,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         Message sentMessage = await (messageText.Split(' ')[0] switch
         {
             "/last_five_notes" => SendLastFiveNotes(msg),
+            "/delete" => Delete(msg),
             "/photo" => SendPhoto(msg),
             "/inline_buttons" => SendInlineKeyboard(msg),
             "/keyboard" => SendReplyKeyboard(msg),
@@ -128,7 +129,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
     {
         var replyMarkup = new ReplyKeyboardMarkup(true)
             .AddNewRow().AddButton("/last_five_notes")
-            .AddNewRow().AddButton("2.1").AddButton("2.2");
+            .AddNewRow().AddButton("/delete");
         return await bot.SendMessage(msg.Chat, "Keyboard buttons:", replyMarkup: replyMarkup);
     }
 
@@ -259,6 +260,12 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
 
     private async Task<Message> SendLastFiveNotes(Message msg)
     {
+        return await bot.SendMessage(msg.Chat, lastFiveUserNotes(msg.Chat.Id), parseMode: ParseMode.Html);
+    }
+
+    private async Task<Message> Delete(Message msg)
+    {
+        throw new NotImplementedException();
         return await bot.SendMessage(msg.Chat, lastFiveUserNotes(msg.Chat.Id), parseMode: ParseMode.Html);
     }
 }
