@@ -50,7 +50,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
 
         Message sentMessage = await (messageText.Split(' ')[0] switch
         {
-            "Показать последние 5 заметок" => SendLastFiveNotes(msg),
+            "/last_five_notes" => SendLastFiveNotes(msg),
             "/photo" => SendPhoto(msg),
             "/inline_buttons" => SendInlineKeyboard(msg),
             "/keyboard" => SendReplyKeyboard(msg),
@@ -127,7 +127,7 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
     async Task<Message> SendReplyKeyboard(Message msg)
     {
         var replyMarkup = new ReplyKeyboardMarkup(true)
-            .AddNewRow("1.1", "1.2", "1.3")
+            .AddNewRow().AddButton("/last_five_notes")
             .AddNewRow().AddButton("2.1").AddButton("2.2");
         return await bot.SendMessage(msg.Chat, "Keyboard buttons:", replyMarkup: replyMarkup);
     }
