@@ -265,7 +265,21 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
 
     private async Task<Message> Delete(Message msg)
     {
-        throw new NotImplementedException();
-        return await bot.SendMessage(msg.Chat, lastFiveUserNotes(msg.Chat.Id), parseMode: ParseMode.Html);
+        DeleteNotesByChatId(msg.Chat.Id);
+        return await bot.SendMessage(msg.Chat, "Заметки удалены", parseMode: ParseMode.Html);
+    }
+
+    private void DeleteNotesByChatId(long chatId)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        using (ApplicationContext db = new ApplicationContext())
+        {
+            var toRemoveNotes = db.Notes.Where(p => p.UserId == chatId).ToList();
+            foreach(Note note in toRemoveNotes)
+            {
+                db.Notes.Remove(note);
+            }
+            db.SaveChanges();
+        }
     }
 }
